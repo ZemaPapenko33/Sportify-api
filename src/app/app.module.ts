@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import configurations from '../configurations/index';
 import { DatabaseModule } from 'src/database/database.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { DatabaseModule } from 'src/database/database.module';
       load: [configurations],
     }),
     DatabaseModule,
+    UserModule,
   ], //Используется для: импорта других модулей
   controllers: [AppController], //
   providers: [AppService], // Используется для: обработки бизнес логики
