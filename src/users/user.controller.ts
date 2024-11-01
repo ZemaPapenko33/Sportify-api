@@ -21,53 +21,29 @@ export class UserController {
   async createUser(
     @Body() createUserDTO: CreateUserDto,
   ): Promise<UserResponseDto> {
-    try {
-      return await this.userService.createUser(createUserDTO);
-    } catch (error) {
-      throw new NotFoundException('Ошибка при создании пользователя');
-    }
+    return await this.userService.createUser(createUserDTO);
   }
 
   @Get()
   async findAllUsers(): Promise<UserResponseDto[]> {
-    try {
-      return await this.userService.findAllUsers();
-    } catch (error) {
-      throw new NotFoundException('Ошибка при получении списка пользователей');
-    }
+    return await this.userService.findAllUsers();
   }
 
   @Get(':id')
-  async findUserById(@Param('id') id: number): Promise<UserResponseDto> {
-    try {
-      return await this.userService.findUserById(id);
-    } catch (error) {
-      throw new NotFoundException(`Пользователь с ID ${id} не найден`);
-    }
+  async findUserById(@Param('id') id: string): Promise<UserResponseDto> {
+    return await this.userService.findUserById(id);
   }
 
   @Put(':id')
   async updateUser(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    try {
-      return await this.userService.updateUser(id, updateUserDto);
-    } catch (error) {
-      throw new NotFoundException(
-        `Ошибка при обновлении пользователя с ID ${id}`,
-      );
-    }
+    return await this.userService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
-  async deleteUser(@Param('id') id: number): Promise<void> {
-    try {
-      await this.userService.deleteUser(id);
-    } catch (error) {
-      throw new NotFoundException(
-        `Ошибка при удалении пользователя с ID ${id}`,
-      );
-    }
+  async deleteUser(@Param('id') id: string): Promise<void> {
+    await this.userService.deleteUser(id);
   }
 }

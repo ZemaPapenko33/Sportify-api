@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { CreateUserDto, UpdateUserDto } from './dto';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { UserRepository } from './userRepository.service';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class UserService {
   ) {}
 
   //Создать пользователя
-  async createUser(createUserDto: CreateUserDto): Promise<User> {
+  async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const newUser = this.userRepository.create(createUserDto);
     try {
       return await this.userRepository.save(newUser);
@@ -28,7 +28,7 @@ export class UserService {
   }
 
   // Получить всех пользователей
-  async findAllUsers(): Promise<User[]> {
+  async findAllUsers(): Promise<UserResponseDto[]> {
     try {
       return await this.userRepository.find();
     } catch (error) {
@@ -39,7 +39,7 @@ export class UserService {
   }
 
   // Найти пользователя по ID
-  async findUserById(id: number): Promise<User> {
+  async findUserById(id: string): Promise<UserResponseDto> {
     try {
       const user = await this.userRepository.findOneBy({ id });
       if (!user) {
@@ -54,7 +54,10 @@ export class UserService {
   }
 
   // Обновить пользователя
-  async updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+  async updateUser(
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<UserResponseDto> {
     try {
       await this.userRepository.update(id, updateUserDto);
       return await this.findUserById(id);
@@ -66,7 +69,7 @@ export class UserService {
   }
 
   // Удалить пользователя
-  async deleteUser(id: number): Promise<void> {
+  async deleteUser(id: string): Promise<void> {
     try {
       const result = await this.userRepository.softDelete(id);
       if (result.affected === 0) {
