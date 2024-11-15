@@ -21,9 +21,7 @@ export class UserService {
     try {
       return await this.userRepository.save(newUser);
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Ошибка при создании пользователя',
-      );
+      throw new InternalServerErrorException('Error when creating a user');
     }
   }
 
@@ -33,7 +31,7 @@ export class UserService {
       return await this.userRepository.find();
     } catch (error) {
       throw new InternalServerErrorException(
-        'Ошибка при получении списка пользователей',
+        'Error when retrieving the list of users',
       );
     }
   }
@@ -43,13 +41,11 @@ export class UserService {
     try {
       const user = await this.userRepository.findOneBy({ id });
       if (!user) {
-        throw new NotFoundException(`Пользователь с ID ${id} не найден`);
+        throw new NotFoundException(`User ID ${id} not found`);
       }
       return user;
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Ошибка при получении пользователя',
-      );
+      throw new InternalServerErrorException('Error when retrieving a user');
     }
   }
 
@@ -62,23 +58,20 @@ export class UserService {
       await this.userRepository.update(id, updateUserDto);
       return await this.findUserById(id);
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Ошибка при обновлении пользователя',
-      );
+      throw new InternalServerErrorException('Error during user update');
     }
   }
 
   // Удалить пользователя
-  async deleteUser(id: string): Promise<void> {
+  async deleteUser(id: string): Promise<string> {
     try {
       const result = await this.userRepository.softDelete(id);
       if (result.affected === 0) {
-        throw new NotFoundException(`Пользователь с ID ${id} не найден`);
+        throw new NotFoundException(`User ID ${id} not found`);
       }
+      return `User with ID ${id} has been deleted successfully`;
     } catch (error) {
-      throw new InternalServerErrorException(
-        'Ошибка при удалении пользователя',
-      );
+      throw new InternalServerErrorException('Error when deleting a user');
     }
   }
 }
