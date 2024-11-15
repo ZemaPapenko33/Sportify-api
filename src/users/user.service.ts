@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { UserRepository } from './userRepository.service';
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class UserService {
@@ -18,6 +19,8 @@ export class UserService {
   //Создать пользователя
   async createUser(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const newUser = this.userRepository.create(createUserDto);
+    newUser.password = await bcrypt.hash(createUserDto.password, 10);
+
     try {
       return await this.userRepository.save(newUser);
     } catch (error) {
