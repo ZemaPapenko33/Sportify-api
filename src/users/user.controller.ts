@@ -28,11 +28,17 @@ export class UserController {
     return await this.userService.createUser(createUserDTO);
   }
 
-  @Post('/:userId/:courseId')
+  @Post(UserRoutes.ADD_COURSE)
+  @ApiOperation({ summary: 'Add user to course' })
+  @ApiResponse({ status: 201, description: 'User was added to course' })
+  @ApiResponse({
+    status: 400,
+    description: 'Error when adding a user to course',
+  })
   async addUserToCourse(
     @Param('userId') userId: string,
     @Param('courseId') courseId: string,
-  ) {
+  ): Promise<UserResponseDto> {
     return this.userService.addUserToCourse(userId, courseId);
   }
 
