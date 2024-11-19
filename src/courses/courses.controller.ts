@@ -19,7 +19,7 @@ export class CoursesController {
 
   @Post()
   @ApiOperation({ summary: 'Create course' })
-  @ApiResponse({ status: 200, description: 'Course was created' })
+  @ApiResponse({ status: 201, description: 'Course was created' })
   @ApiResponse({ status: 400, description: 'Error when creating a course' })
   async createCourse(
     @Body() createCourseDto: CreateCourseDto,

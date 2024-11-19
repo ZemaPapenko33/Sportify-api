@@ -20,7 +20,7 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: 200, description: 'User was created' })
+  @ApiResponse({ status: 201, description: 'User was created' })
   @ApiResponse({ status: 400, description: 'Error when creating a user' })
   async createUser(
     @Body() createUserDTO: CreateUserDto,

@@ -77,7 +77,7 @@ export class CoursesService {
       if (result.affected === 0) {
         throw new NotFoundException(`Course ID ${id} not found`);
       }
-      return `Course with ID${id} has been deleted seccessfully`;
+      return `Course with ID${id} has been deleted successfully`;
     } catch (error) {
       throw new InternalServerErrorException(
         `Error when deleting a course: ${error.message}`,

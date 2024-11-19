@@ -1,11 +1,11 @@
-export enum courseGrade {
-  Easy = 'Easy',
-  Middle = 'Middle',
-  Hard = 'Hard',
-  ForPro = 'For pro',
+export enum CourseGradesEnum {
+  TRAINEE = 'Trainee',
+  JUNIOR = 'Junior',
+  MIDDLE = 'Middle',
+  SENIOR = 'Senior',
 }
 
-export enum language {
-  Ru = 'ru',
-  Eng = 'eng',
+export enum LanguagesEnum {
+  RU = 'ru',
+  ENG = 'eng',
 }

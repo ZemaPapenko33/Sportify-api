@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsDate, IsEnum, IsOptional, IsString } from 'class-validator';
-import { courseGrade, language } from 'src/shared/enums';
+import { CourseGradesEnum, LanguagesEnum } from 'src/shared/enums';
 
 export class CreateCourseDto {
   @ApiProperty({
@@ -19,22 +19,22 @@ export class CreateCourseDto {
   description: string;
 
   @ApiProperty({ description: 'Course grade', example: 'Easy' })
-  @IsEnum(courseGrade)
-  grade: courseGrade;
+  @IsEnum(CourseGradesEnum)
+  grade: CourseGradesEnum;
 
   @ApiProperty({ description: 'Course start date', example: '19.11.2024' })
-  @Transform(({ value }) => new Date(value)) // Преобразуем строку в Date
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   startDate: Date;
 
   @ApiProperty({ description: 'Course end date', example: '19.11.2025' })
-  @Transform(({ value }) => new Date(value)) // Преобразуем строку в Date
+  @Transform(({ value }) => new Date(value))
   @IsDate()
   endDate: Date;
 
   @ApiProperty({ description: 'Language', example: 'ru' })
-  @IsEnum(language)
-  language: language;
+  @IsEnum(LanguagesEnum)
+  language: LanguagesEnum;
 
   //В дальнейшем можно добавить (преподавателей, стек, Этапы курса (1,2,3, и тд), )
 }
@@ -63,9 +63,9 @@ export class UpdateCourseDto {
     example: 'Easy',
     required: false,
   })
-  @IsEnum(courseGrade)
+  @IsEnum(CourseGradesEnum)
   @IsOptional()
-  grade?: courseGrade;
+  grade?: CourseGradesEnum;
 
   @ApiProperty({
     description: 'Course start date',
@@ -73,7 +73,7 @@ export class UpdateCourseDto {
     required: false,
   })
   @IsDate()
-  @Transform(({ value }) => new Date(value)) // Преобразуем строку в Date
+  @Transform(({ value }) => new Date(value))
   @IsOptional()
   startDate?: Date;
 
@@ -83,22 +83,38 @@ export class UpdateCourseDto {
     required: false,
   })
   @IsDate()
-  @Transform(({ value }) => new Date(value)) // Преобразуем строку в Date
+  @Transform(({ value }) => new Date(value))
   @IsOptional()
   endDate?: Date;
 
   @ApiProperty({ description: 'Language', example: 'ru', required: false })
-  @IsEnum(language)
+  @IsEnum(LanguagesEnum)
   @IsOptional()
-  language?: language;
+  language?: LanguagesEnum;
 }
 
 export class CourseResponseDto {
+  @ApiProperty({ description: 'Course id', example: 'hutu83-nudnik888' })
   id: string;
+
+  @ApiProperty({ description: 'Course title', example: 'Nest js for beginner' })
   title: string;
+
+  @ApiProperty({
+    description: 'Course description',
+    example: 'This course for beginner',
+  })
   description: string;
-  grade: courseGrade;
+
+  @ApiProperty({ description: 'Course grade', example: 'Junior+' })
+  grade: CourseGradesEnum;
+
+  @ApiProperty({ description: 'Course start date', example: '19.11.2024' })
   startDate: Date;
+
+  @ApiProperty({ description: 'Course end date', example: '19.11.2025' })
   endDate: Date;
-  language: language;
+
+  @ApiProperty({ description: 'Course language', example: 'ru' })
+  language: LanguagesEnum;
 }
