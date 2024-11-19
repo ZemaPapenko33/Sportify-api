@@ -28,6 +28,14 @@ export class UserController {
     return await this.userService.createUser(createUserDTO);
   }
 
+  @Post('/:userId/:courseId')
+  async addUserToCourse(
+    @Param('userId') userId: string,
+    @Param('courseId') courseId: string,
+  ) {
+    return this.userService.addUserToCourse(userId, courseId);
+  }
+
   @Get()
   @ApiOperation({ summary: 'Get all users in DB' })
   @ApiResponse({ status: 200, description: 'All users' })

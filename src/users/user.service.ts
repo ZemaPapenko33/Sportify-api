@@ -8,12 +8,16 @@ import { User } from './user.entity';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { UserRepository } from './userRepository.service';
 import * as bcrypt from 'bcryptjs';
+import { Course } from 'src/courses/course.entity';
+import { CourseRepository } from 'src/courses/coursesRepository.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: UserRepository,
+    @InjectRepository(Course)
+    private readonly courseRepository: CourseRepository,
   ) {}
 
   //Создать пользователя
@@ -78,6 +82,34 @@ export class UserService {
       return `User with ID ${id} has been deleted successfully`;
     } catch (error) {
       throw new InternalServerErrorException('Error when deleting a user');
+    }
+  }
+
+  //Add user to course
+  async addUserToCourse(
+    userId: string,
+    courseId: string,
+  ): Promise<UserResponseDto> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['courses'],
+      });
+
+      const course = await this.courseRepository.findOne({
+        where: { id: courseId },
+      });
+
+      if (!user || !course) {
+        throw new Error('User or course not found');
+      }
+
+      user.courses.push(course);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error when added course:${error.message}`,
+      );
     }
   }
 }

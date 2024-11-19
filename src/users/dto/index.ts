@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { Course } from 'src/courses/course.entity';
 
 export class CreateUserDto {
   @ApiProperty({ description: 'User name', example: 'John Doe' })
@@ -76,4 +77,5 @@ export class UserResponseDto {
     example: '2024-11-19 08:23:04.608',
   })
   deletedAt?: Date | null;
+  courses?: Course[];
 }
