@@ -7,12 +7,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './course.entity';
 import { CourseRepository } from './coursesRepository.service';
 import { CourseResponseDto, CreateCourseDto, UpdateCourseDto } from './dto';
+import { User } from 'src/users/user.entity';
+import { UserRepository } from 'src/users/userRepository.service';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepository: CourseRepository,
+    @InjectRepository(User)
+    private readonly userRepository: UserRepository,
   ) {}
 
   //create course
@@ -20,7 +24,15 @@ export class CoursesService {
     createCourseDto: CreateCourseDto,
   ): Promise<CourseResponseDto> {
     try {
-      const newCourse = this.courseRepository.create(createCourseDto);
+      const { ownerId } = createCourseDto;
+      const owner = await this.userRepository.findOneOrFail({
+        where: { id: ownerId },
+      });
+      const newCourse = this.courseRepository.create({
+        ...createCourseDto,
+        owner,
+      });
+
       return await this.courseRepository.save(newCourse);
     } catch (error) {
       throw new InternalServerErrorException(
@@ -81,6 +93,28 @@ export class CoursesService {
     } catch (error) {
       throw new InternalServerErrorException(
         `Error when deleting a course: ${error.message}`,
+      );
+    }
+  }
+
+  //Add course to user
+  async addCourseToUser(
+    courseId: string,
+    userId: string,
+  ): Promise<CourseResponseDto> {
+    try {
+      const user = await this.userRepository.findOneOrFail({
+        where: { id: userId },
+      });
+      const course = await this.courseRepository.findOneOrFail({
+        where: { id: courseId },
+      });
+
+      course.users.push(user);
+      return await this.courseRepository.save(course);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error when added course to user:${error.message}`,
       );
     }
   }
