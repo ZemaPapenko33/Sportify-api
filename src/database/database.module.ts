@@ -16,7 +16,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         database: configService.get<string>('DB_database'),
         autoLoadEntities: true,
         synchronize: false,
-        migrations: ['../migrations/*.js'],
+        migrations: ['../../migrations/*.ts'],
         migrationsRun: true,
       }),
     }),

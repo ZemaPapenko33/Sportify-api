@@ -8,6 +8,7 @@ import {
   DeleteDateColumn,
   ManyToMany,
   JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -34,6 +35,9 @@ export class User {
   deletedAt: Date | null;
 
   @ManyToMany(() => Course, (course) => course.users)
-  @JoinTable()
+  @JoinTable({ name: 'user_course' })
   courses: Course[];
+
+  @OneToMany(() => Course, (course) => course.owner)
+  ownedCourses: Course[];
 }

@@ -20,7 +20,11 @@ export class UserController {
 
   @Post()
   @ApiOperation({ summary: 'Create user' })
-  @ApiResponse({ status: 201, description: 'User was created' })
+  @ApiResponse({
+    status: 201,
+    description: 'User was created',
+    type: [UserResponseDto],
+  })
   @ApiResponse({ status: 400, description: 'Error when creating a user' })
   async createUser(
     @Body() createUserDTO: CreateUserDto,
@@ -28,23 +32,13 @@ export class UserController {
     return await this.userService.createUser(createUserDTO);
   }
 
-  @Post(UserRoutes.ADD_COURSE)
-  @ApiOperation({ summary: 'Add user to course' })
-  @ApiResponse({ status: 201, description: 'User was added to course' })
-  @ApiResponse({
-    status: 400,
-    description: 'Error when adding a user to course',
-  })
-  async addUserToCourse(
-    @Param('userId') userId: string,
-    @Param('courseId') courseId: string,
-  ): Promise<UserResponseDto> {
-    return this.userService.addUserToCourse(userId, courseId);
-  }
-
   @Get()
   @ApiOperation({ summary: 'Get all users in DB' })
-  @ApiResponse({ status: 200, description: 'All users' })
+  @ApiResponse({
+    status: 200,
+    description: 'All users',
+    type: [UserResponseDto],
+  })
   @ApiResponse({
     status: 400,
     description: 'Error when retrieving the list of users',
@@ -55,7 +49,11 @@ export class UserController {
 
   @Get(UserRoutes.BY_ID)
   @ApiOperation({ summary: 'Get user by id' })
-  @ApiResponse({ status: 200, description: 'User was searched' })
+  @ApiResponse({
+    status: 200,
+    description: 'User was searched',
+    type: [UserResponseDto],
+  })
   @ApiResponse({ status: 400, description: 'Error when searched a user' })
   async findUserById(@Param('id') id: string): Promise<UserResponseDto> {
     return await this.userService.findUserById(id);
@@ -63,7 +61,11 @@ export class UserController {
 
   @Put(UserRoutes.BY_ID)
   @ApiOperation({ summary: 'Update user by id' })
-  @ApiResponse({ status: 200, description: 'User was updated' })
+  @ApiResponse({
+    status: 200,
+    description: 'User was updated',
+    type: [UserResponseDto],
+  })
   @ApiResponse({ status: 400, description: 'Error when updated a user' })
   async updateUser(
     @Param('id') id: string,

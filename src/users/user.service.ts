@@ -31,17 +31,21 @@ export class UserService {
     try {
       return await this.userRepository.save(newUser);
     } catch (error) {
-      throw new InternalServerErrorException('Error when creating a user');
+      throw new InternalServerErrorException(
+        `Error when creating a user:${error.message}`,
+      );
     }
   }
 
   // Получить всех пользователей
   async findAllUsers(): Promise<UserResponseDto[]> {
     try {
-      return await this.userRepository.find();
+      return await this.userRepository.find({
+        relations: ['courses', 'ownedCourses'],
+      });
     } catch (error) {
       throw new InternalServerErrorException(
-        'Error when retrieving the list of users',
+        `Error when retrieving the list of users:${error.message}`,
       );
     }
   }
@@ -55,7 +59,9 @@ export class UserService {
       }
       return user;
     } catch (error) {
-      throw new InternalServerErrorException('Error when retrieving a user');
+      throw new InternalServerErrorException(
+        `Error when retrieving a user:${error.message}`,
+      );
     }
   }
 
@@ -68,7 +74,9 @@ export class UserService {
       await this.userRepository.update(id, updateUserDto);
       return await this.findUserById(id);
     } catch (error) {
-      throw new InternalServerErrorException('Error during user update');
+      throw new InternalServerErrorException(
+        `Error during user update:${error.message}`,
+      );
     }
   }
 
@@ -81,34 +89,8 @@ export class UserService {
       }
       return `User with ID ${id} has been deleted successfully`;
     } catch (error) {
-      throw new InternalServerErrorException('Error when deleting a user');
-    }
-  }
-
-  //Add user to course
-  async addUserToCourse(
-    userId: string,
-    courseId: string,
-  ): Promise<UserResponseDto> {
-    try {
-      const user = await this.userRepository.findOne({
-        where: { id: userId },
-        relations: ['courses'],
-      });
-
-      const course = await this.courseRepository.findOne({
-        where: { id: courseId },
-      });
-
-      if (!user || !course) {
-        throw new Error('User or course not found');
-      }
-
-      user.courses.push(course);
-      return await this.userRepository.save(user);
-    } catch (error) {
       throw new InternalServerErrorException(
-        `Error when added course:${error.message}`,
+        `Error when deleting a user:${error.message}`,
       );
     }
   }

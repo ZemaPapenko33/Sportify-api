@@ -5,6 +5,7 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -32,6 +33,9 @@ export class Course {
   language: LanguagesEnum;
 
   @ManyToMany(() => User, (user) => user.courses)
-  @JoinTable()
+  @JoinTable({ name: 'course_user' })
   users: User[];
+
+  @ManyToOne(() => User, (user) => user.ownedCourses)
+  owner: User;
 }
