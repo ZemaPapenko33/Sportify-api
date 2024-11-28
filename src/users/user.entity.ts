@@ -1,3 +1,4 @@
+import { Course } from 'src/courses/course.entity';
 import {
   Entity,
   Column,
@@ -5,6 +6,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -29,4 +33,11 @@ export class User {
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true, name: 'delete_at' })
   deletedAt: Date | null;
+
+  @ManyToMany(() => Course, (course) => course.users)
+  @JoinTable({ name: 'user_course' })
+  courses: Course[];
+
+  @OneToMany(() => Course, (course) => course.owner)
+  ownedCourses: Course[];
 }

@@ -19,7 +19,11 @@ export class CoursesController {
 
   @Post()
   @ApiOperation({ summary: 'Create course' })
-  @ApiResponse({ status: 201, description: 'Course was created' })
+  @ApiResponse({
+    status: 201,
+    description: 'Course was created',
+    type: [CourseResponseDto],
+  })
   @ApiResponse({ status: 400, description: 'Error when creating a course' })
   async createCourse(
     @Body() createCourseDto: CreateCourseDto,
@@ -27,9 +31,27 @@ export class CoursesController {
     return await this.courseService.createCourse(createCourseDto);
   }
 
+  @Post(CourseRoutes.ADD_USER_TO_COURSE)
+  @ApiOperation({ summary: 'Add course to user' })
+  @ApiResponse({ status: 201, description: 'Course was added to user' })
+  @ApiResponse({
+    status: 400,
+    description: 'Error when adding a user to course',
+  })
+  async addCourseToUser(
+    @Param('courseId') courseId: string,
+    @Param('userId') userId: string,
+  ): Promise<CourseResponseDto> {
+    return this.courseService.addCourseToUser(courseId, userId);
+  }
+
   @Get()
   @ApiOperation({ summary: 'Get all courses' })
-  @ApiResponse({ status: 200, description: 'Get all courses' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get all courses',
+    type: [CourseResponseDto],
+  })
   @ApiResponse({
     status: 400,
     description: 'Error when retrieving the list of courses',
@@ -40,7 +62,11 @@ export class CoursesController {
 
   @Get(UserRoutes.BY_ID)
   @ApiOperation({ summary: 'Get course by id' })
-  @ApiResponse({ status: 200, description: 'Get course by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Get course by id',
+    type: [CourseResponseDto],
+  })
   @ApiResponse({ status: 400, description: 'Error when searched a course' })
   async findCourseById(@Param('id') id: string): Promise<CourseResponseDto> {
     return await this.courseService.findCourseById(id);
@@ -48,7 +74,11 @@ export class CoursesController {
 
   @Put(UserRoutes.BY_ID)
   @ApiOperation({ summary: 'Update course' })
-  @ApiResponse({ status: 200, description: 'Course was updated' })
+  @ApiResponse({
+    status: 200,
+    description: 'Course was updated',
+    type: [CourseResponseDto],
+  })
   @ApiResponse({ status: 400, description: 'Error when updated a course' })
   async updateCourse(
     @Param('id') id: string,

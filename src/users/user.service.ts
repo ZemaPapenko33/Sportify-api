@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -8,12 +9,15 @@ import { User } from './user.entity';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { UserRepository } from './userRepository.service';
 import * as bcrypt from 'bcryptjs';
+import { Course } from 'src/courses/course.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: UserRepository,
+    @Inject(Course)
+    private readonly courses: Course,
   ) {}
 
   //Создать пользователя
@@ -27,17 +31,21 @@ export class UserService {
     try {
       return await this.userRepository.save(newUser);
     } catch (error) {
-      throw new InternalServerErrorException('Error when creating a user');
+      throw new InternalServerErrorException(
+        `Error when creating a user:${error.message}`,
+      );
     }
   }
 
   // Получить всех пользователей
   async findAllUsers(): Promise<UserResponseDto[]> {
     try {
-      return await this.userRepository.find();
+      return await this.userRepository.find({
+        relations: ['courses', 'ownedCourses'],
+      });
     } catch (error) {
       throw new InternalServerErrorException(
-        'Error when retrieving the list of users',
+        `Error when retrieving the list of users:${error.message}`,
       );
     }
   }
@@ -45,13 +53,13 @@ export class UserService {
   // Найти пользователя по ID
   async findUserById(id: string): Promise<UserResponseDto> {
     try {
-      const user = await this.userRepository.findOneBy({ id });
-      if (!user) {
-        throw new NotFoundException(`User ID ${id} not found`);
-      }
+      const user = await this.userRepository.findOneByOrFail({ id });
+
       return user;
     } catch (error) {
-      throw new InternalServerErrorException('Error when retrieving a user');
+      throw new InternalServerErrorException(
+        `Error when retrieving a user:${error.message}`,
+      );
     }
   }
 
@@ -64,7 +72,9 @@ export class UserService {
       await this.userRepository.update(id, updateUserDto);
       return await this.findUserById(id);
     } catch (error) {
-      throw new InternalServerErrorException('Error during user update');
+      throw new InternalServerErrorException(
+        `Error during user update:${error.message}`,
+      );
     }
   }
 
@@ -77,7 +87,9 @@ export class UserService {
       }
       return `User with ID ${id} has been deleted successfully`;
     } catch (error) {
-      throw new InternalServerErrorException('Error when deleting a user');
+      throw new InternalServerErrorException(
+        `Error when deleting a user:${error.message}`,
+      );
     }
   }
 }
