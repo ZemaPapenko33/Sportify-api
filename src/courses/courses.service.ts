@@ -44,7 +44,7 @@ export class CoursesService {
   //get all course
   async findAllCourses(): Promise<CourseResponseDto[]> {
     try {
-      return await this.courseRepository.find();
+      return await this.courseRepository.find({ relations: ['owner'] });
     } catch (error) {
       throw new InternalServerErrorException(
         `Error when retrieving the list of courses:${error.message}`,
@@ -55,10 +55,7 @@ export class CoursesService {
   //get course by id
   async findCourseById(id: string): Promise<CourseResponseDto> {
     try {
-      const course = await this.courseRepository.findOneBy({ id });
-      if (!course) {
-        throw new NotFoundException(`Course ID ${id} not found`);
-      }
+      const course = await this.courseRepository.findOneByOrFail({ id });
       return course;
     } catch (error) {
       throw new InternalServerErrorException(

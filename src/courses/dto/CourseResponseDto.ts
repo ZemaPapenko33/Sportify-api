@@ -25,4 +25,7 @@ export class CourseResponseDto {
 
   @ApiProperty({ description: 'Course language', example: 'ru' })
   language: LanguagesEnum;
+
+  @ApiProperty({ description: 'Owner id', example: 'iewihewiu-4388hj34' })
+  owner: string;
 }
