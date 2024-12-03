@@ -9,14 +9,14 @@ import { CourseRepository } from './coursesRepository.service';
 import { CourseResponseDto, CreateCourseDto, UpdateCourseDto } from './dto';
 import { User } from 'src/users/user.entity';
 import { UserRepository } from 'src/users/userRepository.service';
+import { UserService } from 'src/users/user.service';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepository: CourseRepository,
-    @InjectRepository(User)
-    private readonly userRepository: UserRepository,
+    private readonly userService: UserService,
   ) {}
 
   //create course
@@ -25,12 +25,15 @@ export class CoursesService {
   ): Promise<CourseResponseDto> {
     try {
       const { ownerId } = createCourseDto;
-      const owner = await this.userRepository.findOneOrFail({
-        where: { id: ownerId },
-      });
+      const owner = await this.userService.findUserById(ownerId);
       const newCourse = this.courseRepository.create({
-        ...createCourseDto,
         owner,
+        title: createCourseDto.title,
+        description: createCourseDto.description,
+        grade: createCourseDto.grade,
+        startDate: createCourseDto.startDate,
+        endDate: createCourseDto.endDate,
+        language: createCourseDto.language,
       });
 
       return await this.courseRepository.save(newCourse);
@@ -100,9 +103,7 @@ export class CoursesService {
     userId: string,
   ): Promise<CourseResponseDto> {
     try {
-      const user = await this.userRepository.findOneOrFail({
-        where: { id: userId },
-      });
+      const user = await this.userService.findUserById(userId);
       const course = await this.courseRepository.findOneOrFail({
         where: { id: courseId },
       });

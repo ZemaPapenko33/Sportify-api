@@ -10,14 +10,14 @@ import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { UserRepository } from './userRepository.service';
 import * as bcrypt from 'bcryptjs';
 import { Course } from 'src/courses/course.entity';
+import { CoursesService } from 'src/courses/courses.service';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: UserRepository,
-    @Inject(Course)
-    private readonly courses: Course,
+    private readonly courseService: CoursesService,
   ) {}
 
   //Создать пользователя
@@ -51,7 +51,7 @@ export class UserService {
   }
 
   // Найти пользователя по ID
-  async findUserById(id: string): Promise<UserResponseDto> {
+  async findUserById(id: string): Promise<User> {
     try {
       const user = await this.userRepository.findOneByOrFail({ id });
 
