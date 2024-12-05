@@ -31,7 +31,7 @@ export class User {
   @UpdateDateColumn({ type: 'timestamp', name: 'update_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn({ type: 'timestamp', nullable: true, name: 'delete_at' })
+  @DeleteDateColumn({ type: 'timestamp', nullable: true, name: 'deleted_at' })
   deletedAt: Date | null;
 
   @ManyToMany(() => Course, (course) => course.users)

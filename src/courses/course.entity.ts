@@ -23,10 +23,10 @@ export class Course {
   @Column()
   grade: CourseGradesEnum;
 
-  @Column()
+  @Column({ name: 'start_date' })
   startDate: Date;
 
-  @Column()
+  @Column({ name: 'end_date' })
   endDate: Date;
 
   @Column()
