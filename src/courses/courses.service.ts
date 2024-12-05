@@ -7,12 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './course.entity';
 import { CourseRepository } from './coursesRepository.service';
 import { CourseResponseDto, CreateCourseDto, UpdateCourseDto } from './dto';
+import { UserService } from 'src/users/user.service';
 
 @Injectable()
 export class CoursesService {
   constructor(
     @InjectRepository(Course)
     private readonly courseRepository: CourseRepository,
+    private readonly userService: UserService,
   ) {}
 
   //create course
@@ -20,7 +22,18 @@ export class CoursesService {
     createCourseDto: CreateCourseDto,
   ): Promise<CourseResponseDto> {
     try {
-      const newCourse = this.courseRepository.create(createCourseDto);
+      const { ownerId } = createCourseDto;
+      const owner = await this.userService.findUserById(ownerId);
+      const newCourse = this.courseRepository.create({
+        owner,
+        title: createCourseDto.title,
+        description: createCourseDto.description,
+        grade: createCourseDto.grade,
+        startDate: createCourseDto.startDate,
+        endDate: createCourseDto.endDate,
+        language: createCourseDto.language,
+      });
+
       return await this.courseRepository.save(newCourse);
     } catch (error) {
       throw new InternalServerErrorException(
@@ -32,7 +45,7 @@ export class CoursesService {
   //get all course
   async findAllCourses(): Promise<CourseResponseDto[]> {
     try {
-      return await this.courseRepository.find();
+      return await this.courseRepository.find({ relations: ['owner'] });
     } catch (error) {
       throw new InternalServerErrorException(
         `Error when retrieving the list of courses:${error.message}`,
@@ -43,10 +56,7 @@ export class CoursesService {
   //get course by id
   async findCourseById(id: string): Promise<CourseResponseDto> {
     try {
-      const course = await this.courseRepository.findOneBy({ id });
-      if (!course) {
-        throw new NotFoundException(`Course ID ${id} not found`);
-      }
+      const course = await this.courseRepository.findOneByOrFail({ id });
       return course;
     } catch (error) {
       throw new InternalServerErrorException(
@@ -81,6 +91,26 @@ export class CoursesService {
     } catch (error) {
       throw new InternalServerErrorException(
         `Error when deleting a course: ${error.message}`,
+      );
+    }
+  }
+
+  //Add course to user
+  async addCourseToUser(
+    courseId: string,
+    userId: string,
+  ): Promise<CourseResponseDto> {
+    try {
+      const user = await this.userService.findUserById(userId);
+      const course = await this.courseRepository.findOneOrFail({
+        where: { id: courseId },
+      });
+
+      course.users.push(user);
+      return await this.courseRepository.save(course);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Error when added course to user:${error.message}`,
       );
     }
   }

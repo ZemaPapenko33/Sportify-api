@@ -1,7 +1,16 @@
-import { courseGrade, language } from 'src/shared/enums';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { CourseGradesEnum, LanguagesEnum } from 'src/shared/enums';
+import { User } from 'src/users/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('courses')
 export class Course {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -13,14 +22,26 @@ export class Course {
   description: string;
 
   @Column()
-  grade: courseGrade;
+  grade: CourseGradesEnum;
 
-  @Column()
+  @Column({ name: 'start_date' })
   startDate: Date;
 
-  @Column()
+  @Column({ name: 'end_date' })
   endDate: Date;
 
   @Column()
-  language: language;
+  language: LanguagesEnum;
+
+  @ManyToMany(() => User, (user) => user.courses)
+  @JoinTable({
+    name: 'courses_users',
+    joinColumn: { name: 'course_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'user_id', referencedColumnName: 'id' },
+  })
+  users: User[];
+
+  @ManyToOne(() => User, (user) => user.ownedCourses)
+  @JoinColumn({ name: 'owner_id' })
+  owner: User;
 }
