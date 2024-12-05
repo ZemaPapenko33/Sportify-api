@@ -1,5 +1,4 @@
 import {
-  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -9,16 +8,12 @@ import { User } from './user.entity';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto';
 import { UserRepository } from './userRepository.service';
 import * as bcrypt from 'bcryptjs';
-import { Course } from 'src/courses/course.entity';
-import { CoursesService } from 'src/courses/courses.service';
-import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: UserRepository,
-    private readonly courseService: CoursesService,
   ) {}
 
   //Создать пользователя
@@ -52,7 +47,7 @@ export class UserService {
   }
 
   // Найти пользователя по ID
-  async findUserById(id: string): Promise<UserResponseDto> {
+  async findUserById(id: string): Promise<User> {
     try {
       const user = await this.userRepository.findOneByOrFail({ id });
 

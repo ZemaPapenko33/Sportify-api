@@ -12,11 +12,16 @@ export class InitialCourse1733389027317 implements MigrationInterface {
         name: 'courses',
         columns: [
           {
+            name: 'owner_id',
+            type: 'uuid',
+          },
+          {
             name: 'id',
             type: 'uuid',
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()',
             isNullable: false,
+            isPrimary: true,
           },
           {
             name: 'title',

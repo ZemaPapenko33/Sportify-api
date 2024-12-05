@@ -1,9 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableForeignKey,
-} from 'typeorm';
+import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class InitialUser1733389004735 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -16,6 +11,7 @@ export class InitialUser1733389004735 implements MigrationInterface {
             type: 'uuid',
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()',
+            isPrimary: true,
           },
           {
             name: 'name',

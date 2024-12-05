@@ -7,8 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Course } from './course.entity';
 import { CourseRepository } from './coursesRepository.service';
 import { CourseResponseDto, CreateCourseDto, UpdateCourseDto } from './dto';
-import { User } from 'src/users/user.entity';
-import { UserRepository } from 'src/users/userRepository.service';
 import { UserService } from 'src/users/user.service';
 
 @Injectable()
